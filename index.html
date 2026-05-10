@@ -2,82 +2,656 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>MUMAA AI - Parenting Companion</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #FFF8F0;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
-        .container {
+        
+        /* Header */
+        .header {
+            background: #FF6B6B;
+            padding: 20px 15px 15px;
             text-align: center;
-            padding: 40px;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-emoji {
+            font-size: 45px;
+        }
+        
+        .header-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            margin-top: 5px;
+        }
+        
+        .header-sub {
+            font-size: 12px;
+            color: #FFE0E0;
+            margin-top: 3px;
+        }
+        
+        /* Tab Bar */
+        .tab-bar {
+            display: flex;
             background: white;
-            border-radius: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            max-width: 500px;
-            margin: 20px;
+            padding: 10px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .emoji {
-            font-size: 80px;
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 8px 0;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
         }
-        h1 {
-            color: #FF6B6B;
-            font-size: 48px;
-            margin: 20px 0 10px;
+        
+        .tab.active {
+            border-bottom-color: #FF6B6B;
         }
-        p {
+        
+        .tab-emoji {
+            font-size: 22px;
+        }
+        
+        .tab-text {
+            font-size: 11px;
             color: #666;
-            font-size: 16px;
-            line-height: 1.6;
+            margin-top: 3px;
         }
-        .button {
+        
+        .tab.active .tab-text {
+            color: #FF6B6B;
+            font-weight: bold;
+        }
+        
+        /* Content */
+        .content {
+            padding: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Cards */
+        .welcome-card {
+            background: #FF6B6B;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        
+        .feature-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card {
+            flex: 1;
+            min-width: calc(50% - 12px);
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .feature-emoji {
+            font-size: 35px;
+        }
+        
+        .feature-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 8px;
+            color: #333;
+        }
+        
+        .feature-desc {
+            font-size: 10px;
+            color: #999;
+            margin-top: 3px;
+        }
+        
+        .tip-card {
+            background: #FFE0E0;
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        
+        .stats-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        /* Chat Styles */
+        .chat-messages {
+            height: 350px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+        
+        .chat-bubble {
+            padding: 10px 14px;
+            border-radius: 18px;
+            margin-bottom: 10px;
+            max-width: 85%;
+        }
+        
+        .chat-bot {
+            background: #F0F0F0;
+            align-self: flex-start;
+        }
+        
+        .chat-user {
+            background: #FF6B6B;
+            align-self: flex-end;
+            margin-left: auto;
+            color: white;
+        }
+        
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input {
+            flex: 1;
+            background: white;
+            border: 1px solid #FFE0E0;
+            border-radius: 25px;
+            padding: 12px 18px;
+            font-size: 14px;
+        }
+        
+        .chat-send {
+            background: #FF6B6B;
+            border: none;
+            border-radius: 30px;
+            width: 48px;
+            height: 48px;
+            font-size: 20px;
+            cursor: pointer;
+            color: white;
+        }
+        
+        .quick-replies {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+        
+        .quick-reply {
+            background: #FFE0E0;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #FF6B6B;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        
+        /* Milestones */
+        .milestone-card {
+            background: white;
+            border-radius: 15px;
+            padding: 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .milestone-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #FF6B6B;
+            margin-bottom: 12px;
+        }
+        
+        .milestone-category {
+            font-size: 14px;
+            font-weight: 600;
+            color: #FF9999;
+            margin-top: 12px;
+            margin-bottom: 6px;
+        }
+        
+        .milestone-item {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 4px;
+            padding-left: 5px;
+        }
+        
+        .red-flag-box {
+            background: #FFF3F0;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 12px;
+            border: 1px solid #FFCDD2;
+        }
+        
+        .age-selector {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+        
+        .age-btn {
+            background: #FFE0E0;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 13px;
+            color: #FF6B6B;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        
+        .age-btn.active {
             background: #FF6B6B;
             color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 16px;
-            border-radius: 30px;
+        }
+        
+        /* Helplines */
+        .helpline-card {
+            background: white;
+            border-radius: 15px;
+            padding: 18px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             cursor: pointer;
-            margin-top: 20px;
         }
-        .features {
-            text-align: left;
-            margin-top: 30px;
+        
+        .helpline-icon {
+            font-size: 40px;
         }
-        .feature {
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
+        
+        .helpline-number {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FF6B6B;
+            margin-top: 4px;
+        }
+        
+        /* Profile */
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .profile-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .profile-input {
+            flex: 1;
+            background: #F5F5F5;
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 14px;
+        }
+        
+        .save-btn {
+            background: #FF6B6B;
+            border: none;
+            padding: 0 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        /* Utility */
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 480px) {
+            .feature-card {
+                min-width: calc(50% - 6px);
+            }
+            .content {
+                padding: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="emoji">🤱</div>
-        <h1>MUMAA AI</h1>
-        <p>Your AI-Powered Parenting Companion</p>
-        
-        <button class="button" onclick="alert('MUMAA AI: Namaste! How can I help you today?')">
-            Tap to Chat
-        </button>
-        
-        <div class="features">
-            <div class="feature">🍼 AI Cry Translator</div>
-            <div class="feature">📊 Developmental Milestones (0-5 years)</div>
-            <div class="feature">💬 24/7 Hinglish AI Support</div>
-            <div class="feature">🚨 Emergency Helplines: 1098, 108, 181</div>
-            <div class="feature">✨ Daily Parenting Tips</div>
-        </div>
-        
-        <p style="font-size: 12px; margin-top: 30px; color: #999;">
-            Made with ❤️ for Indian Parents
-        </p>
+    <div class="header">
+        <div class="header-emoji">🤱</div>
+        <div class="header-title">MUMAA AI</div>
+        <div class="header-sub">Your AI Parenting Companion</div>
     </div>
+
+    <div class="tab-bar" id="tabBar">
+        <div class="tab active" data-tab="home">
+            <div class="tab-emoji">🏠</div>
+            <div class="tab-text">Home</div>
+        </div>
+        <div class="tab" data-tab="chat">
+            <div class="tab-emoji">💬</div>
+            <div class="tab-text">AI Chat</div>
+        </div>
+        <div class="tab" data-tab="milestones">
+            <div class="tab-emoji">📊</div>
+            <div class="tab-text">Milestones</div>
+        </div>
+        <div class="tab" data-tab="helplines">
+            <div class="tab-emoji">🚨</div>
+            <div class="tab-text">Helplines</div>
+        </div>
+    </div>
+
+    <div class="content" id="content"></div>
+
+    <script>
+        // ---------- DATA ----------
+        let babyName = localStorage.getItem('babyName') || '';
+        let babyAge = localStorage.getItem('babyAge') || '';
+        let chatHistory = [
+            { text: '🌸 Namaste! Main MUMAA AI hoon. 🤱\\n\\nAap baby ke baare mein koi bhi sawaal pooch sakti hain Hinglish mein!\\n\\nExample: "3 mahine ke baby ka head control kab tak aana chahiye?"', isUser: false }
+        ];
+
+        const milestonesData = {
+            '0-3': { title: '🌱 0-3 Months', gross: ['✓ Lifts head when on tummy', '✓ Turns head side to side', '✓ Slight head control'], fine: ['✓ Hands in fists', '✓ Grasp reflex', '✓ Follows faces with eyes'], sensory: ['✓ Responds to sounds', '✓ Sensitive to light', '✓ Recognizes mother\'s voice'], language: ['✓ Makes cooing sounds', '✓ Cries to communicate', '✓ Startles at loud sounds'], social: ['✓ Social smile by 2 months', '✓ Watches faces', '✓ Responds to voice'], redFlags: ['❌ No head control by 3-4 months', '❌ Hands still fisted after 3 months', '❌ No social smile by 2-3 months'] },
+            '4-6': { title: '🌟 4-6 Months', gross: ['✓ Rolls over', '✓ Sits with support', '✓ Head control strong'], fine: ['✓ Reaches for objects', '✓ Holds toys', '✓ Brings hands to mouth'], sensory: ['✓ Enjoys colorful toys', '✓ Responds to name', '✓ Turns head to sounds'], language: ['✓ Babbles (ba, da, ma)', '✓ Laughs aloud', '✓ Makes squealing sounds'], social: ['✓ Recognizes familiar faces', '✓ Shows excitement', '✓ Smiles at mirror'], redFlags: ['❌ Not rolling over by 6 months', '❌ No babbling', '❌ Stiff or floppy body'] },
+            '7-9': { title: '🚀 7-9 Months', gross: ['✓ Sits without support', '✓ Crawls/creeps', '✓ Pulls to stand'], fine: ['✓ Transfers objects', '✓ Bangs objects together', '✓ Raking grasp'], sensory: ['✓ Responds to own name', '✓ Enjoys peek-a-boo', '✓ Localizes sound'], language: ['✓ Says "mama"/"dada"', '✓ Imitates sounds', '✓ Understands "no"'], social: ['✓ Stranger anxiety begins', '✓ Waves bye-bye', '✓ Plays peek-a-boo'], redFlags: ['❌ Not sitting by 9 months', '❌ No babbling', '❌ Doesn\'t respond to name'] }
+        };
+
+        function getAIResponse(userMsg) {
+            const msg = userMsg.toLowerCase();
+            if (msg.includes('head control') || msg.includes('3 mahine')) {
+                return "🌸 3-4 mahine mein baby ka head control aana chahiye. Tummy time daily 2-3 baar karein, 5-10 minute each. Isse neck muscles strong hoti hain! 💪";
+            } else if (msg.includes('fever') || msg.includes('bukhar')) {
+                return "🌡️ Baby ko fever hai toh:\n1️⃣ Doctor se contact karein\n2️⃣ Baby ko breastfeed karte rahein\n3️⃣ Temperature monitor karein\n4️⃣ 100°F se upar ho toh doctor dikhao\n\n🚨 Emergency: 108";
+            } else if (msg.includes('sleep') || msg.includes('sota')) {
+                return "😴 Baby ki sleep routine ke liye:\n• Same time daily sulaayein\n• Dark room banayein\n• White noise use karein\n• Feeding ke baad sulaayein";
+            } else if (msg.includes('feeding') || msg.includes('dudh')) {
+                return "🍼 Newborn baby ko har 2-3 ghante mein feeding karni chahiye. 8-12 times in 24 hours. Baby 6-8 wet diapers daily banata hai toh feeding sufficient hai!";
+            } else {
+                return "🌸 Main aapki madad kar sakti hoon! Kya aap poochna chahte hain:\n\n• 🍼 Feeding schedule\n• 🌡️ Fever management\n• 😴 Sleep tips\n• 🦷 Teething\n• 💉 Vaccination\n\nHinglish mein poochhein! 🤱";
+            }
+        }
+
+        // ---------- RENDER FUNCTIONS ----------
+        function renderHome() {
+            return `
+                <div class="welcome-card">
+                    <div style="font-size:40px; text-align:center;">🌸👶🤱</div>
+                    <div style="font-size:20px; font-weight:bold; text-align:center; margin-top:8px;">Welcome to MUMAA!</div>
+                    <div style="font-size:13px; text-align:center; margin-top:8px;">Your AI-powered parenting companion.</div>
+                </div>
+                
+                <div class="profile-card">
+                    <div style="font-weight:bold; color:#FF6B6B; margin-bottom:12px;">👶 Baby Profile</div>
+                    <div class="profile-row">
+                        <input type="text" class="profile-input" id="babyNameInput" placeholder="Baby's name" value="${babyName.replace(/"/g, '&quot;')}">
+                        <input type="number" class="profile-input" id="babyAgeInput" placeholder="Age (months)" value="${babyAge}" style="width:100px;">
+                        <button class="save-btn" onclick="saveProfile()">Save</button>
+                    </div>
+                </div>
+                
+                <div class="stats-row">
+                    <div class="stat-card"><div style="font-size:28px;">📊</div><div style="font-size:18px; font-weight:bold; color:#FF6B6B;">6</div><div style="font-size:10px; color:#666;">Stages</div></div>
+                    <div class="stat-card"><div style="font-size:28px;">💬</div><div style="font-size:18px; font-weight:bold; color:#FF6B6B;">24/7</div><div style="font-size:10px; color:#666;">AI Support</div></div>
+                    <div class="stat-card"><div style="font-size:28px;">🚨</div><div style="font-size:18px; font-weight:bold; color:#FF6B6B;">4+</div><div style="font-size:10px; color:#666;">Helplines</div></div>
+                </div>
+                
+                <div class="feature-grid">
+                    <div class="feature-card" onclick="switchTab('chat')"><div class="feature-emoji">💬</div><div class="feature-title">Ask AI</div><div class="feature-desc">Get instant answers</div></div>
+                    <div class="feature-card" onclick="switchTab('milestones')"><div class="feature-emoji">📊</div><div class="feature-title">Milestones</div><div class="feature-desc">Track development</div></div>
+                    <div class="feature-card" onclick="alert('🍼 Coming soon! Baby cry analysis feature.')"><div class="feature-emoji">🍼</div><div class="feature-title">Cry Translator</div><div class="feature-desc">Coming soon</div></div>
+                    <div class="feature-card" onclick="switchTab('helplines')"><div class="feature-emoji">🚨</div><div class="feature-title">Emergency</div><div class="feature-desc">24/7 Helplines</div></div>
+                </div>
+                
+                <div class="tip-card">
+                    <div style="font-weight:bold; color:#FF6B6B; margin-bottom:8px;">✨ Daily Parenting Tip</div>
+                    <div style="font-size:13px;">📖 Read to your baby for 10 minutes daily. It boosts language development and bonding! 🌸</div>
+                </div>
+            `;
+        }
+
+        function renderChat() {
+            let messagesHtml = '';
+            for (let msg of chatHistory) {
+                messagesHtml += `<div class="chat-bubble ${msg.isUser ? 'chat-user' : 'chat-bot'}" style="${msg.isUser ? 'margin-left:auto;' : ''}">${msg.text.replace(/\n/g, '<br>')}</div>`;
+            }
+            return `
+                <div style="text-align:center; margin-bottom:15px;">
+                    <div style="font-size:20px; font-weight:bold;">💬 Ask MUMAA AI</div>
+                    <div style="font-size:11px; color:#999;">पूछिए हिंग्लिश में | Ask in Hinglish</div>
+                </div>
+                <div class="quick-replies" id="quickReplies">
+                    <div class="quick-reply" onclick="setChatInput('3 mahine ke baby ka head control?')">🌸 Head control?</div>
+                    <div class="quick-reply" onclick="setChatInput('Baby ko fever hai')">🌡️ Fever?</div>
+                    <div class="quick-reply" onclick="setChatInput('Baby raat ko nahi sota')">😴 Sleep?</div>
+                    <div class="quick-reply" onclick="setChatInput('Feeding schedule kya hai?')">🍼 Feeding?</div>
+                </div>
+                <div class="chat-messages" id="chatMessages">${messagesHtml}</div>
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Hinglish mein likhein..." onkeypress="handleChatKeyPress(event)">
+                    <button class="chat-send" onclick="sendChatMessage()">➤</button>
+                </div>
+            `;
+        }
+
+        function renderMilestones() {
+            let ageOptions = '';
+            for (let age in milestonesData) {
+                ageOptions += `<div class="age-btn" data-age="${age}">${age} months</div>`;
+            }
+            const data = milestonesData['0-3'];
+            return `
+                <div style="font-size:18px; font-weight:bold; margin-bottom:8px;">📊 Developmental Milestones</div>
+                <div class="age-selector" id="ageSelector">${ageOptions}</div>
+                <div id="milestoneDetail">
+                    <div class="milestone-card">
+                        <div class="milestone-title">${data.title}</div>
+                        <div class="milestone-category">🏃 Gross Motor</div>
+                        ${data.gross.map(i => `<div class="milestone-item">${i}</div>`).join('')}
+                        <div class="milestone-category">🖐️ Fine Motor</div>
+                        ${data.fine.map(i => `<div class="milestone-item">${i}</div>`).join('')}
+                        <div class="milestone-category">👀 Sensory</div>
+                        ${data.sensory.map(i => `<div class="milestone-item">${i}</div>`).join('')}
+                        <div class="milestone-category">🗣️ Language</div>
+                        ${data.language.map(i => `<div class="milestone-item">${i}</div>`).join('')}
+                        <div class="milestone-category">👨‍👩‍👧 Social-Emotional</div>
+                        ${data.social.map(i => `<div class="milestone-item">${i}</div>`).join('')}
+                        <div class="red-flag-box">
+                            <div style="font-weight:bold; color:#E53935;">⚠️ Red Flags to Watch</div>
+                            ${data.redFlags.map(i => `<div style="font-size:12px; color:#D32F2F;">${i}</div>`).join('')}
+                            <div style="font-size:10px; color:#999; margin-top:8px;">📞 Consult pediatrician if you notice these signs</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="font-size:10px; color:#999; text-align:center; margin-top:10px;">💡 Every baby develops at their own pace. These are general guidelines.</div>
+            `;
+        }
+
+        function renderHelplines() {
+            return `
+                <div style="font-size:18px; font-weight:bold; margin-bottom:12px;">🚨 Emergency Helplines (24/7)</div>
+                <div class="helpline-card" onclick="alert('📞 Dial 1098 from your phone')">
+                    <div class="helpline-icon">👶</div>
+                    <div><div style="font-weight:bold;">Child Helpline</div><div class="helpline-number">1098</div><div style="font-size:11px; color:#999;">24/7 for children in distress</div></div>
+                </div>
+                <div class="helpline-card" onclick="alert('📞 Dial 108 from your phone')">
+                    <div class="helpline-icon">🚑</div>
+                    <div><div style="font-weight:bold;">Medical Emergency</div><div class="helpline-number">108</div><div style="font-size:11px; color:#999;">Ambulance services</div></div>
+                </div>
+                <div class="helpline-card" onclick="alert('📞 iCall: +91-9152987821 (Mon-Sat, 10am-8pm)')">
+                    <div class="helpline-icon">💬</div>
+                    <div><div style="font-weight:bold;">Mental Health Helpline</div><div class="helpline-number">iCall: +91-9152987821</div><div style="font-size:11px; color:#999;">Mon-Sat, 10am-8pm</div></div>
+                </div>
+                <div class="helpline-card" onclick="alert('📞 Dial 181 from your phone')">
+                    <div class="helpline-icon">👩</div>
+                    <div><div style="font-weight:bold;">Women in Distress</div><div class="helpline-number">181</div><div style="font-size:11px; color:#999;">24/7 helpline for women</div></div>
+                </div>
+                <div class="helpline-card" onclick="alert('📞 Dial 1066 from your phone')">
+                    <div class="helpline-icon">☠️</div>
+                    <div><div style="font-weight:bold;">Poison Control</div><div class="helpline-number">1066</div><div style="font-size:11px; color:#999;">24/7 emergency</div></div>
+                </div>
+            `;
+        }
+
+        // ---------- APP STATE ----------
+        let currentTab = 'home';
+
+        function saveProfile() {
+            babyName = document.getElementById('babyNameInput')?.value || '';
+            babyAge = document.getElementById('babyAgeInput')?.value || '';
+            localStorage.setItem('babyName', babyName);
+            localStorage.setItem('babyAge', babyAge);
+            alert(`✅ Profile saved for ${babyName || 'baby'}!`);
+            renderCurrentTab();
+        }
+
+        function setChatInput(text) {
+            const input = document.getElementById('chatInput');
+            if (input) input.value = text;
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') sendChatMessage();
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input?.value.trim();
+            if (!message) return;
+            
+            chatHistory.push({ text: message, isUser: true });
+            input.value = '';
+            
+            const aiResponse = getAIResponse(message);
+            chatHistory.push({ text: aiResponse, isUser: false });
+            
+            renderCurrentTab();
+            setTimeout(() => {
+                const msgDiv = document.getElementById('chatMessages');
+                if (msgDiv) msgDiv.scrollTop = msgDiv.scrollHeight;
+            }, 100);
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            renderCurrentTab();
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.remove('active');
+                if (t.getAttribute('data-tab') === tab) t.classList.add('active');
+            });
+        }
+
+        function attachMilestoneEvents() {
+            const ageBtns = document.querySelectorAll('.age-btn');
+            ageBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const age = btn.getAttribute('data-age');
+                    const data = milestonesData[age];
+                    if (data) {
+                        const detailDiv = document.getElementById('milestoneDetail');
+                        if (detailDiv) {
+                            detailDiv.innerHTML = `
+                                <div class="milestone-card">
+                                    <div class="milestone-title">${data.title}</div>
+                                    <div class="milestone-category">🏃 Gross Motor</div>
+                                    ${data.gross.map(i => `<div class="milestone-item">${i}</div>`).join('')}
+                                    <div class="milestone-category">🖐️ Fine Motor</div>
+                                    ${data.fine.map(i => `<div class="milestone-item">${i}</div>`).join('')}
+                                    <div class="milestone-category">👀 Sensory</div>
+                                    ${data.sensory.map(i => `<div class="milestone-item">${i}</div>`).join('')}
+                                    <div class="milestone-category">🗣️ Language</div>
+                                    ${data.language.map(i => `<div class="milestone-item">${i}</div>`).join('')}
+                                    <div class="milestone-category">👨‍👩‍👧 Social-Emotional</div>
+                                    ${data.social.map(i => `<div class="milestone-item">${i}</div>`).join('')}
+                                    <div class="red-flag-box">
+                                        <div style="font-weight:bold; color:#E53935;">⚠️ Red Flags to Watch</div>
+                                        ${data.redFlags.map(i => `<div style="font-size:12px; color:#D32F2F;">${i}</div>`).join('')}
+                                        <div style="font-size:10px; color:#999; margin-top:8px;">📞 Consult pediatrician if you notice these signs</div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                    ageBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+        }
+
+        function renderCurrentTab() {
+            const contentDiv = document.getElementById('content');
+            if (!contentDiv) return;
+            
+            if (currentTab === 'home') contentDiv.innerHTML = renderHome();
+            else if (currentTab === 'chat') contentDiv.innerHTML = renderChat();
+            else if (currentTab === 'milestones') contentDiv.innerHTML = renderMilestones();
+            else if (currentTab === 'helplines') contentDiv.innerHTML = renderHelplines();
+            
+            if (currentTab === 'milestones') attachMilestoneEvents();
+        }
+
+        // Initialize
+        renderCurrentTab();
+        
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                switchTab(tabName);
+            });
+        });
+    </script>
 </body>
 </html>
